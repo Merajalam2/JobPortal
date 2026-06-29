@@ -55,6 +55,7 @@ export const register = async (req, res) => {
         });
     }
 }
+
 export const login = async (req, res) => {
     try {
         const { email, password, role } = req.body;
@@ -79,7 +80,6 @@ export const login = async (req, res) => {
                 success: false,
             })
         };
-        // check role is correct or not
         if (role !== user.role) {
             return res.status(400).json({
                 message: "Account doesn't exist with current role.",
@@ -104,8 +104,8 @@ export const login = async (req, res) => {
         return res.status(200).cookie("token", token, {
             maxAge: 1 * 24 * 60 * 60 * 1000,
             httpOnly: true,
-            sameSite: 'strict',
-            secure: false,
+            sameSite: 'none',   // ✅ changed
+            secure: true,       // ✅ changed
         }).json({
             message: `Welcome back ${user.fullname}`,
             user,
@@ -119,9 +119,14 @@ export const login = async (req, res) => {
         });
     }
 }
+
 export const logout = async (req, res) => {
     try {
-        return res.status(200).cookie("token", "", { maxAge: 0 }).json({
+        return res.status(200).cookie("token", "", { 
+            maxAge: 0,
+            sameSite: 'none',   // ✅ added
+            secure: true        // ✅ added
+        }).json({
             message: "Logged out successfully.",
             success: true
         })
@@ -133,6 +138,7 @@ export const logout = async (req, res) => {
         });
     }
 }
+
 export const updateProfile = async (req, res) => {
     try {
         const { fullname, email, phoneNumber, bio, skills } = req.body;
@@ -149,7 +155,7 @@ export const updateProfile = async (req, res) => {
         if(skills){
             skillsArray = skills.split(",");
         }
-        const userId = req.id; // middleware authentication
+        const userId = req.id;
         let user = await User.findById(userId);
 
         if (!user) {
@@ -158,19 +164,16 @@ export const updateProfile = async (req, res) => {
                 success: false
             })
         }
-        // updating data
         if(fullname) user.fullname = fullname
         if(email) user.email = email
-        if(phoneNumber)  user.phoneNumber = phoneNumber
+        if(phoneNumber) user.phoneNumber = phoneNumber
         if(bio) user.profile.bio = bio
         if(skills) user.profile.skills = skillsArray
       
-        // resume comes later here...
         if(cloudResponse){
-            user.profile.resume = cloudResponse.secure_url // save the cloudinary url
-            user.profile.resumeOriginalName = file.originalname // Save the original file name
+            user.profile.resume = cloudResponse.secure_url
+            user.profile.resumeOriginalName = file.originalname
         }
-
 
         await user.save();
 
