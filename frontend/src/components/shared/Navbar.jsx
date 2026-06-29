@@ -1,7 +1,7 @@
 import React from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Button } from '../ui/button'
-import { Avatar, AvatarImage } from '../ui/avatar'
+import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar'
 import { LogOut, User2 } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -11,7 +11,7 @@ import { setUser } from '@/redux/authSlice'
 import { toast } from 'sonner'
 
 const Navbar = () => {
-    const { user } = useSelector(store => store.auth);
+    const user = useSelector(store => store.auth.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -29,10 +29,10 @@ const Navbar = () => {
         }
     }
     return (
-        <div className='bg- rgb(18, 194, 108)'>
+        <div className='bg-[rgb(18,194,108)] text-white'>
             <div className='flex items-center justify-between mx-auto max-w-7xl h-16'>
                 <div>
-                    <h1 className='text-7xl font-bold'>Job<span className='text-[GREEN]'>WALA</span></h1>
+                    <h1 className='text-7xl font-bold'>Job<span className='text-white'>WALA</span></h1>
                 </div>
                 <div className='flex items-center gap-12'>
                     <ul className='flex font-medium items-center gap-5'>
@@ -50,20 +50,21 @@ const Navbar = () => {
                                 </>
                             )
                         }
-
-
                     </ul>
                     {
                         !user ? (
                             <div className='flex items-center gap-2'>
-                                <Link to="/login"><Button variant="outline">Login</Button></Link>
-                                <Link to="/signup"><Button className="bg-[GREEN] ">Signup</Button></Link>
+                                <Link to="/login"><Button className="bg-white text-black hover:bg-gray-200">Login</Button></Link>
+                                <Link to="/signup"><Button className="bg-[GREEN]">Signup</Button></Link>
                             </div>
                         ) : (
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Avatar className="cursor-pointer">
                                         <AvatarImage src={user?.profile?.profilePhoto} alt="@shadcn" />
+                                        <AvatarFallback className="bg-white text-green-600 font-bold">
+                                            {user?.fullname?.charAt(0).toUpperCase()}
+                                        </AvatarFallback>
                                     </Avatar>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-80">
@@ -71,6 +72,9 @@ const Navbar = () => {
                                         <div className='flex gap-2 space-y-2'>
                                             <Avatar className="cursor-pointer">
                                                 <AvatarImage src={user?.profile?.profilePhoto} alt="@shadcn" />
+                                                <AvatarFallback className="bg-white text-green-600 font-bold">
+                                                    {user?.fullname?.charAt(0).toUpperCase()}
+                                                </AvatarFallback>
                                             </Avatar>
                                             <div>
                                                 <h4 className='font-medium'>{user?.fullname}</h4>
@@ -82,11 +86,10 @@ const Navbar = () => {
                                                 user && user.role === 'student' && (
                                                     <div className='flex w-fit items-center gap-2 cursor-pointer'>
                                                         <User2 />
-                                                        <Button variant="link"> <Link to="/profile">View Profile</Link></Button>
+                                                        <Button variant="link"><Link to="/profile">View Profile</Link></Button>
                                                     </div>
                                                 )
                                             }
-
                                             <div className='flex w-fit items-center gap-2 cursor-pointer'>
                                                 <LogOut />
                                                 <Button onClick={logoutHandler} variant="link">Logout</Button>
@@ -97,10 +100,8 @@ const Navbar = () => {
                             </Popover>
                         )
                     }
-
                 </div>
             </div>
-
         </div>
     )
 }

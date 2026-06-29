@@ -38,6 +38,11 @@ const Signup = () => {
         formData.append("fullname", input.fullname);
         formData.append("email", input.email);
         formData.append("phoneNumber", input.phoneNumber);
+        if (!input.role) {
+            toast.error("Please select a role.");
+            return;
+        }
+
         formData.append("password", input.password);
         formData.append("role", input.role);
         if (input.file) {
@@ -47,7 +52,6 @@ const Signup = () => {
         try {
             dispatch(setLoading(true));
             const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
-                headers: { 'Content-Type': "multipart/form-data" },
                 withCredentials: true,
             });
             if (res.data.success) {
@@ -56,7 +60,7 @@ const Signup = () => {
             }
         } catch (error) {
             console.log(error);
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message || error.message || "Something went wrong");
         } finally{
             dispatch(setLoading(false));
         }
@@ -66,7 +70,7 @@ const Signup = () => {
         if(user){
             navigate("/");
         }
-    },[])
+    },[user, navigate])
     return (
         <div>
             <Navbar />
@@ -117,6 +121,7 @@ const Signup = () => {
                         <RadioGroup className="flex items-center gap-4 my-5">
                             <div className="flex items-center space-x-2">
                                 <Input
+                                    id="signup-role-student"
                                     type="radio"
                                     name="role"
                                     value="student"
@@ -124,10 +129,11 @@ const Signup = () => {
                                     onChange={changeEventHandler}
                                     className="cursor-pointer"
                                 />
-                                <Label htmlFor="r1">Student</Label>
+                                <Label htmlFor="signup-role-student">Student</Label>
                             </div>
                             <div className="flex items-center space-x-2">
                                 <Input
+                                    id="signup-role-recruiter"
                                     type="radio"
                                     name="role"
                                     value="recruiter"
@@ -135,7 +141,7 @@ const Signup = () => {
                                     onChange={changeEventHandler}
                                     className="cursor-pointer"
                                 />
-                                <Label htmlFor="r2">Recruiter</Label>
+                                <Label htmlFor="signup-role-recruiter">Recruiter</Label>
                             </div>
                         </RadioGroup>
                         <div className='flex items-center gap-2'>

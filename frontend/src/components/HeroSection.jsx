@@ -16,22 +16,20 @@ const HeroSection = () => {
     }
 
     return (
-        <div className='text-center bg-rgb(18, 194, 108)'>
-            <div className='flex flex-col gap-5 my-10 '>
-                <span className=' mx-auto px-4 py-2 rounded-full bg-gray-100 text-[#0c0a09] font-medium'>No. 1 Job Website</span>
-                <h1 className='text-5xl font-bold'>Search, Apply & <br /> Get Your <span className='text-[GREEN]'>Dream Jobs</span></h1>
+        <div className='text-center'>
+            <div className='flex flex-col gap-5 my-10'>
+                <span className='mx-auto px-4 py-2 rounded-full bg-gray-100 text-[#1e1e1d] font-medium'>No. 1 Job Website</span>
+                <h1 className='text-5xl font-bold'>Search, Apply & <br /> Get Your <span className='text-green-600'>Dream Jobs</span></h1>
                 <p>SHOW YOUR SKILLS</p>
-                <div className='flex w-[50%] shadow-2xl border border-black-200 pl-3 rounded-full items-center gap-4 mx-auto  '>
+                <div className='flex w-[50%] shadow-xl border border-gray-300 pl-3 rounded-full items-center gap-4 mx-auto bg-white'>
                     <input
                         type="text"
-                        
-                        placeholder='  '
+                        placeholder='Search jobs here...'
                         onChange={(e) => setQuery(e.target.value)}
-                        className='outline-none border-none w-full  search '
-
+                        className='outline-none border-none w-full rounded-full bg-transparent px-4 py-2 text-black placeholder-gray-500'
                     />
-                    <Button onClick={searchJobHandler} className="rounded-r-full bg-[GREEn]">
-                        <Search className='h-51 w-51' />
+                    <Button onClick={searchJobHandler} className="rounded-r-full bg-green-600 hover:bg-green-700">
+                        <Search className='h-5 w-5' />
                     </Button>
                 </div>
             </div>

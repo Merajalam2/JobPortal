@@ -28,6 +28,10 @@ const Login = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+        if (!input.role) {
+            toast.error("Please select a role.");
+            return;
+        }
         try {
             dispatch(setLoading(true));
             const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
@@ -43,7 +47,7 @@ const Login = () => {
             }
         } catch (error) {
             console.log(error);
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message || error.message || "Something went wrong");
         } finally {
             dispatch(setLoading(false));
         }
@@ -52,7 +56,7 @@ const Login = () => {
         if(user){
             navigate("/");
         }
-    },[])
+    },[user, navigate])
     return (
         <div>
             <Navbar />
@@ -84,6 +88,7 @@ const Login = () => {
                         <RadioGroup className="flex items-center gap-4 my-5">
                             <div className="flex items-center space-x-2">
                                 <Input
+                                    id="login-role-student"
                                     type="radio"
                                     name="role"
                                     value="student"
@@ -91,10 +96,11 @@ const Login = () => {
                                     onChange={changeEventHandler}
                                     className="cursor-pointer"
                                 />
-                                <Label htmlFor="r1">Student</Label>
+                                <Label htmlFor="login-role-student">Student</Label>
                             </div>
                             <div className="flex items-center space-x-2">
                                 <Input
+                                    id="login-role-recruiter"
                                     type="radio"
                                     name="role"
                                     value="recruiter"
@@ -102,7 +108,7 @@ const Login = () => {
                                     onChange={changeEventHandler}
                                     className="cursor-pointer"
                                 />
-                                <Label htmlFor="r2">Recruiter</Label>
+                                <Label htmlFor="login-role-recruiter">Recruiter</Label>
                             </div>
                         </RadioGroup>
                     </div>
